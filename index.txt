@@ -1,0 +1,174 @@
+</html>
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Passwortkarte</title>
+    <style>
+        .selected-th{
+            color:brown;
+        }
+        table,th,td{
+            border:black 1px solid;
+            border-collapse: collapse;
+        }
+        th,td{
+            padding:10px;
+        }
+        tr th,tr td:first-child{
+            content: "";
+            background-color: darkgray;
+        }
+        .bottom-border-input{
+			border:none;
+			border-bottom:1px solid black;
+			outline:none;
+			margin:4px;
+		}
+    </style>
+</head>
+
+<body>
+    <!--input field to set how many rows should be generated-->
+    <p>
+    <label for="start">Y-ACHSE </label>
+    <input id="yA" type="number"> <button id="gen">generieren</button><br>
+    </p>
+
+    <!--create base tableheaders A-Z-->
+    <table id="table">
+        <tr id="PW-Karte">
+            <th class="selected-th">-</th>
+            <th>A</th>
+            <th>B</th>
+            <th>C</th>
+            <th>D</th>
+            <th>E</th>
+            <th>F</th>
+            <th>G</th>
+            <th>H</th>
+            <th>I</th>
+            <th>J</th>
+            <th>K</th>
+            <th>L</th>
+            <th>M</th>
+            <th>N</th>
+            <th>O</th>
+            <th>P</th>
+            <th>Q</th>
+            <th>R</th>
+            <th>S</th>
+            <th>T</th>
+            <th>U</th>
+            <th>V</th>
+            <th>W</th>
+            <th>X</th>
+            <th>Y</th>
+            <th>Z</th>
+        </tr>
+    </table>
+
+    <br>
+    <!--texfields for the user to use-->
+    <div class="input-container">
+        <input type="text" class="bottom-border-input">
+        <input type="text" class="bottom-border-input">
+        <input type="text" class="bottom-border-input">
+        <input type="text" class="bottom-border-input">
+    </div>      
+    <div class="input-container">
+        <input type="text" class="bottom-border-input">
+        <input type="text" class="bottom-border-input">
+        <input type="text" class="bottom-border-input">
+        <input type="text" class="bottom-border-input">
+    </div>
+    <div class="input-container">
+        <input type="text" class="bottom-border-input">
+        <input type="text" class="bottom-border-input">
+        <input type="text" class="bottom-border-input">
+        <input type="text" class="bottom-border-input">
+    </div>
+    <div class="input-container">
+        <input type="text" class="bottom-border-input">
+        <input type="text" class="bottom-border-input">
+        <input type="text" class="bottom-border-input">
+        <input type="text" class="bottom-border-input">
+    </div>
+    <div class="input-container">
+        <input type="text" class="bottom-border-input">
+        <input type="text" class="bottom-border-input">
+        <input type="text" class="bottom-border-input">
+        <input type="text" class="bottom-border-input">
+    </div>
+    <br>
+    <!--printbutton so the user can print the page-->
+    <p> <button onclick="window.print()" id="printbutton">Karte ausdrucken</button></p>
+
+    <script>
+
+        //*******************    FUNCTIONS    *******************
+        
+        //It adds new Table rows/cells to the table (empty).
+
+        function createEmptyTable(){
+        //------------ It clears the previous generated HTML tags.
+            while(document.getElementsByClassName('rows').length > 0){
+                document.getElementsByClassName('rows')[0].parentNode.removeChild(document.getElementsByClassName('rows')[0]);
+            }
+            
+        //------------ It generates empty table cells with the user input.
+            for(let i = 0; i < userInputY_achse; i++){
+                document.getElementsByTagName("tbody")[0].insertAdjacentHTML("beforeend", "<tr class='rows' id="+i+"></tr>");
+                for(let y = 0; y < numCols; y++){
+                    if(!y){
+                        document.getElementById(i).insertAdjacentHTML("beforeend", "<td>"+(i+1)+"</td>");
+                    }
+                    document.getElementById(i).insertAdjacentHTML("beforeend", "<td></td>");
+                }
+            }
+        }
+
+        //Fills the table cells with chars from the passwordchars array.
+
+        function fillTable(){
+            const passwordchars = [
+                ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'],
+                ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'],
+                ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'],
+                ['+', '-', '_', ',', '.', 'ç', '°', '*', '%', '&', '/', '(', ')', '=', '?', '!', 'ä', 'ü', 'ö', 'Ä', 'Ü', 'Ö', '$', '#', '@']
+            ];
+            let table = document.getElementById('table'); 
+            
+            
+            for(let i = 1; i < (1+userInputY_achse); i++){
+                let row = table.rows[i];
+                for(let j = 1; j <= numCols; j++){
+        //------------ randomChar safes a random picked char from the passwordchars array.
+                    let randomCategory = passwordchars[Math.floor(Math.random() * passwordchars.length)];
+                    let randomChar = randomCategory[Math.floor(Math.random() * randomCategory.length)];
+        
+                    let cell = row.cells[j];
+                    cell.textContent = randomChar;
+                }
+            }
+        }
+
+
+        //*******************    MAIN         *******************
+
+        var userInputY_achse = 0;
+        var numCols = 26;
+
+        document.getElementById("gen").addEventListener("click", function(){
+            userInputY_achse = parseInt(document.getElementById("yA").value);
+            //*------------ Setts the userInputY_achse var to 0 if user input is empty.
+            if(!userInputY_achse){
+                userInputY_achse = 0;
+            }
+            createEmptyTable();
+            fillTable();
+        });
+
+    </script>
+</body>
+</html>
